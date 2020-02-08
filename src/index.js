@@ -1,12 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import './_index.scss';
+import '@babel/polyfill';
+import 'antd/dist/antd.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Login, Panel, Forgot } from 'views';
+import { createBrowserHistory } from 'history';
+import { createStore } from 'store';
+import { PrivateRoute } from 'globalComponents';
+import { Provider } from 'react-redux';
+import { render } from 'react-dom';
+import React, { Component } from 'react';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+if (process.env.NODE_ENV !== 'production') {
+  let script = document.createElement('script');
+  script.setAttribute('src', 'http://localhost:35729/livereload.js');
+  document.body.appendChild(script);
+}
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const history = createBrowserHistory();
+const store = createStore(history);
+
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <BrowserRouter>
+          <Switch>
+            <Route path='/login' component={Login} exact />
+            <Route path='/forgot' component={Forgot} exact />
+            <Route path='/' component={PrivateRoute(Panel)} />
+          </Switch>
+        </BrowserRouter>
+      </Provider>
+    );
+  }
+}
+
+render(<App />, document.getElementById('root'));
