@@ -4,29 +4,33 @@ import { Layout, Menu, Icon, Button, Tag, Dropdown } from 'antd';
 import { Route, Switch } from 'react-router-dom';
 import { isMobile } from '../../utils';
 //import { Component404 } from 'globalComponents';
-//import { Wallet, Certification, User, Admin, SuperAdmin } from './components';
+import { Clientes } from './components';
 
 const { Content, Sider, Header } = Layout;
 
 const menu = [{
-  group: 'Main',
+  group: 'Clientes',
   items: [{
       path: '/',
-      label: 'My wallet',
-      icon: 'money-collect'
-    }, {
-      path: '/certification',
-      label: 'Certifications',
-      icon: 'safety-certificate'
-    }]
-}, {
-  group: 'Panel',
-  items: [{
-    path: '/user',
-    label: 'User',
-    icon: 'user'
-  }]
-}];
+      label: 'Buscar',
+      icon: 'user'
+    }, 
+    // {
+    //   path: '/certification',
+    //   label: 'Certifications',
+    //   icon: 'safety-certificate'
+    // }
+  ]
+}, 
+// {
+//   group: 'Panel',
+//   items: [{
+//     path: '/user',
+//     label: 'User',
+//     icon: 'user'
+//   }]
+// }
+];
 
 class Panel extends Component {
   constructor(props) {
@@ -141,7 +145,7 @@ class Panel extends Component {
     return (
       <Content className='panel--content'>
         <Switch>
-          <Route exact path='/' component={() => <div>View</div>} />
+          <Route exact path='/' component={Clientes} />
           {/* <Route component={Component404}/> */}
         </Switch>
       </Content>
