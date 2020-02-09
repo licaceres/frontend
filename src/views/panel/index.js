@@ -34,7 +34,8 @@ class Panel extends Component {
 
     this.state = {
       collapsed: false,
-      selected: ['/']
+      selected: ['/'],
+      currentUser: JSON.parse(localStorage.getItem('currentUser'))
     };
 
   }
@@ -58,7 +59,7 @@ class Panel extends Component {
   }
 
   onCollapse = () => {
-    this.setState({collapsed: !this.state.collapsed});
+    this.setState({ collapsed: !this.state.collapsed });
   }
 
   renderSlider = () => {
@@ -121,14 +122,15 @@ class Panel extends Component {
   }
 
   renderHeader = () => {
+    const { currentUser } = this.state;
     return (
       <Header align='right' style={{ paddingRight: '15px' }}>
-        <Tag color='geekblue' hidden={isMobile}><Icon type='user' /> username</Tag>
-        <Tag color='geekblue' style={{ marginRight: '25px' }} hidden={isMobile}><Icon type='tag' /> role</Tag>
-        <Button type='primary' breakpoint='sm' hidden={isMobile}>Cerrar sesión</Button>
+        <Tag color='geekblue' hidden={isMobile}><Icon type='user' /> {currentUser.username}</Tag>
+        <Tag color='geekblue' style={{ marginRight: '25px' }} hidden={isMobile}><Icon type='tag' /> {currentUser.rol}</Tag>
+        <Button type='primary' breakpoint='sm' hidden={isMobile} onClick={this.logOut}>Cerrar sesión</Button>
         <div hidden={!isMobile}>
           <Dropdown overlay={this.menuMovil} trigger={['click']}>
-            <Button type='primary' className='ant-dropdown-link' shape='circle' icon='user' />
+            <Button type='primary' className='ant-dropdown-link' shape='circle' icon='user' onClick={this.logOut}/>
           </Dropdown>
         </div>
       </Header>
@@ -147,16 +149,17 @@ class Panel extends Component {
   }
 
   menuMovil = () => {
+    const { currentUser } = this.state;
     return (
       <Menu>
         <Menu.ItemGroup key='0'>
-          <Tag color='geekblue'><Icon type='user' /> username</Tag>
+          <Tag color='geekblue'><Icon type='user' /> {currentUser.username}</Tag>
         </Menu.ItemGroup>
         <Menu.ItemGroup key='1'>
-          <Tag color='geekblue' style={{ marginBottom: '10px' }}><Icon type='tag' /> role</Tag>
+          <Tag color='geekblue' style={{ marginBottom: '10px' }}><Icon type='tag' /> {currentUser.role}</Tag>
         </Menu.ItemGroup>
         <Menu.Divider />
-        <Menu.Item key='3'>Cerrar sesión</Menu.Item>
+        <Menu.Item key='3' onClick={this.logOut}>Cerrar sesión</Menu.Item>
       </Menu>
     );
   }
@@ -171,6 +174,11 @@ class Panel extends Component {
         </Layout>
       </Layout>
     );
+  }
+
+  logOut = () => {
+    localStorage.clear();
+    window.location.reload();
   }
 }
 
