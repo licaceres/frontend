@@ -1,152 +1,177 @@
+import './index.css';
 import React, { Component } from 'react';
 import { Layout, Menu, Icon, Button, Tag, Dropdown } from 'antd';
+import { Route, Switch } from 'react-router-dom';
+import { isMobile } from '../../utils';
+//import { Component404 } from 'globalComponents';
+//import { Wallet, Certification, User, Admin, SuperAdmin } from './components';
 
-const { Header, Content, Sider } = Layout;
-const { SubMenu } = Menu;
+const { Content, Sider, Header } = Layout;
 
-export class App extends Component {
+const menu = [{
+  group: 'Main',
+  items: [{
+      path: '/',
+      label: 'My wallet',
+      icon: 'money-collect'
+    }, {
+      path: '/certification',
+      label: 'Certifications',
+      icon: 'safety-certificate'
+    }]
+}, {
+  group: 'Panel',
+  items: [{
+    path: '/user',
+    label: 'User',
+    icon: 'user'
+  }]
+}];
 
+class Panel extends Component {
   constructor(props) {
     super(props);
-    let screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
     this.state = {
       collapsed: false,
-      width: screenWidth,
+      selected: ['/']
     };
 
-    console.log(this.state.width);
   }
 
-  onCollapse = collapsed => {
-    console.log(collapsed);
-    this.setState({ collapsed });
-  };
+  componentDidMount = async () => {
+    this.setState({
+      selected: [this.props.location.pathname]
+    });
+  }
 
-  render() {
-    const menuMovil = (
-      <Menu>
-        <Menu.ItemGroup key="0">
-          <Tag color="geekblue"><Icon type="user" /> username</Tag>
-        </Menu.ItemGroup>
-        <Menu.ItemGroup key="1">
-          <Tag color="geekblue" style={{ marginBottom: '10px' }}><Icon type="tag" /> role</Tag>
-        </Menu.ItemGroup>
-        <Menu.Divider />
-        <Menu.Item key="3">Cerrar sesión</Menu.Item>
-      </Menu>
-    );
+  componentDidUpdate = (prevProps) => {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.setState({
+        selected: [this.props.location.pathname]
+      });
+    }
+  }
+
+  handleLinkClick = (route) => {
+    this.props.history.push(route);
+  }
+
+  onCollapse = () => {
+    this.setState({collapsed: !this.state.collapsed});
+  }
+
+  renderSlider = () => {
+    // const { role } = this.props.user.user;
+    // let menu = userMenu;
+
+    // if (role === 'admin') {
+    //   menu = adminMenu;
+    // } else if (role === 'superAdmin') {
+    //   menu = superAdminMenu;
+    // }
 
     return (
-      <div className="App">
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider collapsible defaultCollapsed={this.state.width > 576 ? false : true} onCollapse={this.onCollapse} breakpoint='sd' collapsedWidth={this.state.width > 576 ? 80 : 0}>
-            <div className="logo">
-              <p style={{ color: 'white', fontSize: '1.5em', marginTop: '15px', marginLeft: '22px' }}>GPRO</p>
-            </div>
-            <Menu theme="dark" mode="inline">
-              <SubMenu
-                key="sub1"
-                title={
-                  <span>
-                    <Icon type="contacts" />
-                    <span>Clientes</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="1">Nuevo</Menu.Item>
-                <Menu.Item key="2">Editar</Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub2"
-                title={
-                  <span>
-                    <Icon type="project" />
-                    <span>Proyectos</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="3">Item 1</Menu.Item>
-                <Menu.Item key="4">Item 2</Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub3"
-                title={
-                  <span>
-                    <Icon type="bars" />
-                    <span>Tareas</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="5">Item 1</Menu.Item>
-                <Menu.Item key="6">Item 2</Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub4"
-                title={
-                  <span>
-                    <Icon type="team" />
-                    <span>Empleados</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="7">Item 1</Menu.Item>
-                <Menu.Item key="8">Item 2</Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub5"
-                title={
-                  <span>
-                    <Icon type="user" />
-                    <span>Usuarios</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="8">Item 1</Menu.Item>
-                <Menu.Item key="9">Item 2</Menu.Item>
-              </SubMenu>
-              <SubMenu style={{marginTop: '20px'}}
-                key="sub6"
-                title={
-                  <span>
-                    <Icon type="file-pdf" />
-                    <span>Reportes</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="8">Item 1</Menu.Item>
-                <Menu.Item key="9">Item 2</Menu.Item>
-              </SubMenu>
-              <Menu.Item key="10" style={{marginTop: '20px'}}>
-                <Icon type="info-circle" />
-                <span>Acerca de</span>
-              </Menu.Item>
-            </Menu>
-          </Sider>
-          <Layout>
-            <Header align="right" style={{ paddingRight: '15px' }}>
-              <Tag color="geekblue" hidden={this.state.width > 576 ? false : true}><Icon type="user" /> username</Tag>
-              <Tag color="geekblue" style={{ marginRight: '25px' }} hidden={this.state.width > 576 ? false : true}><Icon type="tag" /> role</Tag>
-              <Button type="primary" breakpoint="sm" hidden={this.state.width > 576 ? false : true}>Cerrar sesión</Button>
-              <div hidden={this.state.width < 576 ? false : true}>
-                <Dropdown overlay={menuMovil} trigger={['click']}>
-                  <Button type="primary" className="ant-dropdown-link" shape="circle" icon="user" />
-                </Dropdown>
-              </div>
-            </Header>
-            <Content
-              style={{
-                margin: '24px 16px',
-                padding: 24,
-                background: '#fff',
-                minHeight: 280,
-              }}
-            >
-          </Content>
-          </Layout>
+      <Sider 
+        collapsible 
+        defaultCollapsed={isMobile} 
+        onCollapse={this.onCollapse} 
+        breakpoint='sd' 
+        collapsedWidth={!isMobile ? 80 : 0}>
+        <div className='logo'>
+          <p style={{ color: 'white', fontSize: '1.5em', marginTop: '15px', marginLeft: '22px' }}>GPRO</p>
+        </div>
+
+        <Menu
+          mode='inline'
+          theme='dark'
+          selectedKeys={this.state.selected}>
+          {
+            menu.map((item, index) => {
+              if (item.group) {
+                return (
+                  <Menu.ItemGroup key={`group-${index}`} title={item.group}>
+                    {
+                      item.items.map((element) => 
+                        <Menu.Item
+                          key={element.path}
+                          onClick={() => this.handleLinkClick(element.path)}>
+                          <Icon type={element.icon}/>
+                          <span>{element.label}</span>
+                        </Menu.Item>
+                      )
+                    }
+                  </Menu.ItemGroup>
+                );
+              } else {
+                return (
+                  <Menu.Item
+                    key={item.path}
+                    onClick={() => this.handleLinkClick(item.path)}>
+                    <Icon type={item.icon}/>
+                    <span>{item.label}</span>
+                  </Menu.Item>
+                )
+              }
+            })
+          }
+        </Menu>
+      </Sider>
+    );
+  }
+
+  renderHeader = () => {
+    return (
+      <Header align='right' style={{ paddingRight: '15px' }}>
+        <Tag color='geekblue' hidden={isMobile}><Icon type='user' /> username</Tag>
+        <Tag color='geekblue' style={{ marginRight: '25px' }} hidden={isMobile}><Icon type='tag' /> role</Tag>
+        <Button type='primary' breakpoint='sm' hidden={isMobile}>Cerrar sesión</Button>
+        <div hidden={!isMobile}>
+          <Dropdown overlay={this.menuMovil} trigger={['click']}>
+            <Button type='primary' className='ant-dropdown-link' shape='circle' icon='user' />
+          </Dropdown>
+        </div>
+      </Header>
+    );
+  }
+
+  renderContent = () => {
+    return (
+      <Content className='panel--content'>
+        <Switch>
+          <Route exact path='/' component={() => <div>View</div>} />
+          {/* <Route component={Component404}/> */}
+        </Switch>
+      </Content>
+    );
+  }
+
+  menuMovil = () => {
+    return (
+      <Menu>
+        <Menu.ItemGroup key='0'>
+          <Tag color='geekblue'><Icon type='user' /> username</Tag>
+        </Menu.ItemGroup>
+        <Menu.ItemGroup key='1'>
+          <Tag color='geekblue' style={{ marginBottom: '10px' }}><Icon type='tag' /> role</Tag>
+        </Menu.ItemGroup>
+        <Menu.Divider />
+        <Menu.Item key='3'>Cerrar sesión</Menu.Item>
+      </Menu>
+    );
+  }
+
+  render() {
+    return (
+      <Layout className='panel'>
+        {this.renderSlider()}
+        <Layout>
+          {this.renderHeader()}
+          {this.renderContent()}
         </Layout>
-      </div>
+      </Layout>
     );
   }
 }
 
-export default App;
+export default Panel;
