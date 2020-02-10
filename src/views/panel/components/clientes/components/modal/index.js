@@ -1,5 +1,5 @@
-import React, { useState, useEffect }  from 'react';
-import { Modal, Form, message } from 'antd';
+import React, { useState }  from 'react';
+import { Modal, Form } from 'antd';
 import * as Yup from 'yup';
 import { omit } from 'lodash';
 import { FormItem } from '../../../../../../globalComponents';

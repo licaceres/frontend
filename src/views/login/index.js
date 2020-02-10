@@ -140,8 +140,12 @@ export class Login extends Component {
       }
 
     } catch (error) {
-      // FIX THIS
-      message.error('Nombre de usuario o contraseña incorrectos');
+      let messageError = 'Hubo un error';
+      if (error.response) {
+        messageError = error.response.data.message;
+      }
+
+      message.error(messageError);
     }
 
     this.setState({ loading: false });
