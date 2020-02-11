@@ -1,112 +1,144 @@
-import React, { useState }  from 'react';
+import React, { Component } from 'react';
 import { Modal, Form } from 'antd';
 import * as Yup from 'yup';
 import { omit } from 'lodash';
 import { FormItem } from '../../../../../../globalComponents';
 
 const validateSchema = Yup.object().shape({
-  description: Yup.string()
+  idcliente: Yup.string()
     .required('Description is required.'),
 
-  file: Yup.string()
+  razonsocialcliente: Yup.string()
     .required('Url file is required.'),
 
-  name: Yup.string()
+  apellidocliente: Yup.string()
     .required('Name is required.'),
+
+  nombrecliente: Yup.string()
+    .required('Description is required.'),
+
+  direccioncliente: Yup.string()
+    .required('Url file is required.'),
+
+  telefonocliente: Yup.number()
+    .required('Name is required.'),
+
+  emailcliente: Yup.string()
+    .required('Description is required.')
+    .email('Formato de email incorrecto')
 });
 
-const CertModal = ({ visible, handleModal, certification, createCert, getCerts }) => {
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    file: ''
-  });
-  const [errors, setErrors] = useState({});
+class CertModal extends Component {
+  constructor(props) {
+    super(props);
 
-  // useEffect(() => {
-  //   if (certification.error) {
-  //     message.error(certification.error);
-  //   }
-  // }, [certification.error]);
-
-  const reset = () => {
-    setForm({
-      description: '',
-      name: '',
-      file: ''
-    });
-    setErrors({});
-    handleModal();
+    this.state = {
+      form: {
+        idcliente: '',
+        razonsocialcliente: '',
+        apellidocliente: '',
+        nombrecliente: '',
+        direccioncliente: '',
+        telefonocliente: '',
+        emailcliente: ''
+      },
+      errors: {}
+    }
   }
 
-  const onChange = (value, key) => {
+  componentDidUpdate(prevProps) {
+    if (!prevProps.visible && this.props.visible && !!this.props.cliente) {
+      this.setState({
+        form: omit(this.props.cliente, ['lazyLoader','proyecto'])
+      });
+    }
+  }
+
+  render() {
+    const { visible, handleModal, creating, editando, cliente } = this.props;
+    const { form, errors } = this.state;
+
+    return (
+      <Modal
+        title={!!cliente ? 'Editar Cliente' : 'Nuevo Cliente'}
+        visible={visible}
+        onOk={this.handleSubmit}
+        okText='Confirmar'
+        okButtonProps={{ 
+          loading: creating || editando, 
+          disabled: creating || editando
+        }}
+        onCancel={handleModal}
+        cancelButtonProps={{ disabled: creating || editando }}
+        cancelText='Cancelar'
+        width='50%'>
+        <Form>
+
+          {
+            Object.keys(form).map((key, index) => {
+              let type='text';
+
+              if (key === 'telefonocliente') {
+                type = 'number';
+              }
+
+              return (
+                <FormItem
+                  label={key}
+                  key={index}
+                  name={key}
+                  type={type}
+                  placeholder={key}
+                  value={form[key]}
+                  error={errors[key]}
+                  onChange={this.onChange}/>
+              );
+            })
+          }
+
+        </Form>
+      </Modal>
+    );
+  }
+
+  handleSubmit = async () => {
+    const { form } = this.state;
+    try {
+      // VALIDO CON YUP
+      await validateSchema.validate(form, { abortEarly: false });
+
+      if (!!this.props.cliente) {
+        return this.props.editarCliente();
+      }
+
+      this.props.crearCliente(form);
+    } catch (error) {
+      let errors = {};
+
+      error.inner.forEach(error => {
+        errors[error.path] = error.message;
+      });
+
+      this.setState({ errors });
+    }
+  }
+
+  onChange = (value, key) => {
+    const { errors, form } = this.state;
+    // SI EL PARAM TIENE ERROR, LO BORRO
     if (errors[key]) {
       let _errors = omit(errors, key);
-      setErrors(_errors);
+      this.setState({
+        errors: _errors
+      });
     }
-
-    setForm({
-      ...form,
-      [key]: value
+    // CAMBIO STATE DEL PARAM
+    this.setState({
+      form: Object.assign({}, form, {
+        [key]: value
+      })
     });
   }
-
-  const handleOk = async () => {
-    // try {
-    //   await validateSchema.validate(form, { abortEarly: false });
-
-    //   let success = await createCert(form);
-
-    //   if (success) {
-    //     reset();
-    //     getCerts();
-    //     return message.success('Certficación creada con exito!');
-    //   }
-    // } catch (error) {
-    //   let _errors = {};
-
-    //   error.inner.forEach(error => {
-    //     _errors[error.path] = error.message;
-    //   });
-
-    //   setErrors(_errors);
-    // }
-  }
-
-  return (
-    <Modal
-      title='New certification'
-      visible={visible}
-      onOk={handleOk}
-      okText='Confirm'
-      // okButtonProps={{ 
-      //   loading: certification.isFetching, 
-      //   disabled: certification.isFetching
-      // }}
-      onCancel={reset}
-      //cancelButtonProps={{ disabled: certification.isFetching }}
-      cancelText='Cancel'
-      width='50%'>
-      <Form>
-
-        {
-          Object.keys(form).map((key, index) => {
-            return (
-              <FormItem
-                label={key}
-                key={index}
-                name={key}
-                placeholder={key}
-                value={form[key]}
-                error={errors[key]}
-                onChange={onChange}/>
-            );
-          })
-        }
-
-      </Form>
-    </Modal>
-  );
 }
 
 export default CertModal;

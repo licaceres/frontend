@@ -6,42 +6,6 @@ import { getHeader } from '../../../../utils';
 import axios from 'axios';
 import { FormItem } from '../../../../globalComponents';
 
-const columns = [
-  {
-    title: 'CUIT',
-    dataIndex: 'idCliente',
-    key: 'idCliente',
-    sorter: (a, b) => {
-      return a.idCliente - b.idCliente;
-    },
-  },
-  {
-    title: 'R.Social',
-    dataIndex: 'razonSocialCliente',
-    key: 'razonSocialCliente'
-  },
-  {
-    title: 'Nombre y Apellido',
-    key: 'fullname',
-    sorter: (a, b) => {
-      return a.nombreCliente - b.nombreCliente;
-    },
-    render: item => {
-      return `${item.nombreCliente} ${item.apellidoCliente}`
-    }
-  },
-  {
-    title: 'Dirección',
-    dataIndex: 'direccionCliente',
-    key: 'direccionCliente',
-  },
-  {
-    title: 'E-Mail',
-    dataIndex: 'emailCliente',
-    key: 'emailCliente',
-  }
-];
-
 class Certification extends Component {
   constructor(props) {
     super(props);
@@ -49,16 +13,65 @@ class Certification extends Component {
     this.state = {
       visible: false,
       loading: false,
+      creating: false,
       dato: '',
       cuit: '',
-      errros: {},
-      clientes: []
+      clientes: [],
+
+      editando: false,
+      cliente: null
     };
   }
 
   render() {
-    const { visible, loading, clientes, dato, cuit } = this.state;
-
+    const { visible, loading, clientes, dato, cuit, editando, cliente } = this.state;
+    const columns = [
+      {
+        title: 'CUIT',
+        dataIndex: 'idCliente',
+        key: 'idCliente',
+        sorter: (a, b) => {
+          return a.idCliente - b.idCliente;
+        },
+      },
+      {
+        title: 'R.Social',
+        dataIndex: 'razonSocialCliente',
+        key: 'razonSocialCliente'
+      },
+      {
+        title: 'Nombre y Apellido',
+        key: 'fullname',
+        sorter: (a, b) => {
+          return a.nombreCliente - b.nombreCliente;
+        },
+        render: item => {
+          return `${item.nombreCliente} ${item.apellidoCliente}`
+        }
+      },
+      {
+        title: 'Dirección',
+        dataIndex: 'direccionCliente',
+        key: 'direccionCliente',
+      },
+      {
+        title: 'E-Mail',
+        dataIndex: 'emailCliente',
+        key: 'emailCliente',
+      },
+      {
+        title: 'Editar',
+        key: 'editar',
+        render: item => {
+          return (
+            <Button
+              onClick={() => this.handleEditar(item)}>
+              Editar
+            </Button>
+          );
+        }
+      }
+    ];
     return (
       <div>
         <Button
@@ -126,9 +139,45 @@ class Certification extends Component {
 
         <Modal 
           visible={visible}
-          handleModal={this.handleModal} />
+          handleModal={this.handleModal}
+          crearCliente={this.crearCliente}
+          editando={editando}
+          cliente={cliente}
+          editarCliente={this.editarCliente} />
       </div>
     );
+  }
+
+  editarCliente = (form) => {
+    console.log(form);
+  }
+
+  handleEditar = (cliente) => {
+    this.setState({
+      visible: true,
+      cliente: cliente
+    });
+  }
+
+  crearCliente = async (form) => {
+    try {
+      this.setState({ creating: true });
+      const res = await axios.post('http://localhost:60932/cliente/new', form, getHeader());
+
+      if (res.data) {
+        message.success('Cliente creado con exito!');
+        this.handleModal();
+      }
+    } catch (error) {
+      let messageError = 'Hubo un error';
+      if (error.response) {
+        messageError = error.response.data.message || 'Hubo un error';
+      }
+
+      message.error(messageError);
+    }
+
+    this.setState({ creating: false });
   }
 
   onChange = (value, key) => {
@@ -158,11 +207,17 @@ class Certification extends Component {
     try {
       this.setState({ loading: true });
       const res = await axios.get(url, getHeader());
-      this.setState({ clientes: res.data });
+      let data = res.data;
+
+      if (!!this.state.cuit) {
+        data = [data];
+      }
+
+      this.setState({ clientes: data });
     } catch (error) {
       let messageError = 'Hubo un error';
       if (error.response) {
-        messageError = error.response.data.message;
+        messageError = error.response.data.message || 'Hubo un error';
       }
 
       message.error(messageError);
