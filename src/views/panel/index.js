@@ -4,7 +4,7 @@ import { Layout, Menu, Icon, Button, Tag, Dropdown } from 'antd';
 import { Route, Switch } from 'react-router-dom';
 import { isMobile } from '../../utils';
 //import { Component404 } from 'globalComponents';
-import { Clientes } from './components';
+import { Clientes, nanoComponente } from './components';
 
 const { Content, Sider, Header } = Layout;
 
@@ -15,11 +15,11 @@ const menu = [{
       label: 'Buscar',
       icon: 'user'
     }, 
-    // {
-    //   path: '/certification',
-    //   label: 'Certifications',
-    //   icon: 'safety-certificate'
-    // }
+    {
+      path: '/nano',
+      label: 'Nano',
+      icon: 'safety-certificate'
+    }
   ]
 }, 
 // {
@@ -146,6 +146,7 @@ class Panel extends Component {
       <Content className='panel--content'>
         <Switch>
           <Route exact path='/' component={Clientes} />
+          <Route exact path='/nano' component={nanoComponente} />
           {/* <Route component={Component404}/> */}
         </Switch>
       </Content>

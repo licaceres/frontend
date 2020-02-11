@@ -28,7 +28,7 @@ const validateSchema = Yup.object().shape({
     .email('Formato de email incorrecto')
 });
 
-class CertModal extends Component {
+class ClientesModal extends Component {
   constructor(props) {
     super(props);
 
@@ -141,4 +141,4 @@ class CertModal extends Component {
   }
 }
 
-export default CertModal;
+export default ClientesModal;

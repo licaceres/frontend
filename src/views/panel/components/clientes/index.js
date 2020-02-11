@@ -6,7 +6,7 @@ import { getHeader } from '../../../../utils';
 import axios from 'axios';
 import { FormItem } from '../../../../globalComponents';
 
-class Certification extends Component {
+class ClientesView extends Component {
   constructor(props) {
     super(props);
 
@@ -230,4 +230,4 @@ class Certification extends Component {
   }
 }
 
-export default Certification;
+export default ClientesView;
