@@ -12,6 +12,7 @@ class Certification extends Component {
 
     this.state = {
       fecha: '',
+      errors: '',
       form: {
         fecha: '',
         dato: '',
@@ -46,7 +47,7 @@ class Certification extends Component {
   }
 
   render() {
-    const { form } = this.state;
+    const { form, errors } = this.state;
 
     return (
       <div>
