@@ -12,13 +12,13 @@ class Certification extends Component {
 
     this.state = {
       fecha: '',
-      errors: '',
       form: {
         fecha: '',
         dato: '',
         dato2: '',
         dato3: ''
-      }
+      },
+      errors: {}
     };
   }
 
@@ -65,7 +65,7 @@ class Certification extends Component {
               // si la key es fecha o la condicion que vos quieras retornas otra cosa
               if (key === 'fecha') {
                 return (
-                  <DatePicker value={form.fecha} onChange={this.onChange} />
+                    <DatePicker value={form.fecha} onChange={this.onChange} />
                 );
               }
 

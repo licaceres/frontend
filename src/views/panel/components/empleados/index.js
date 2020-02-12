@@ -4,6 +4,7 @@ import { Row, Col, Table, Button, Form, Divider, message } from 'antd';
 import { Modal } from './components';
 import { getHeader } from '../../../../utils';
 import axios from 'axios';
+import moment from 'moment';
 import { FormItem } from '../../../../globalComponents';
 
 class EmpleadosView extends Component {
@@ -24,7 +25,7 @@ class EmpleadosView extends Component {
     }
 
     render() {
-        const { visible, loading, clientes, dato, dni, editando, empleado } = this.state;
+        const { visible, loading, empleados, dato, dni, editando, empleado } = this.state;
 
         const columns = [
             {
@@ -37,8 +38,8 @@ class EmpleadosView extends Component {
             },
             {
                 title: 'DNI',
-                dataIndex: 'dniEmpleado',
-                key: 'dniEmpleado',
+                dataIndex: 'dni',
+                key: 'dni',
             },
             {
               title: 'Nombre y Apellido',
@@ -52,8 +53,10 @@ class EmpleadosView extends Component {
             },
             {
               title: 'Fecha de ingreso',
-              dataIndex: 'fechaIngreso',
-              key: 'fechaIngreso'
+              key: 'fechaIngreso',
+              render: item => {
+                return moment(item).format('DD/MM/YYYY');
+              }
             },
             {
               title: 'Telefono',
@@ -66,10 +69,10 @@ class EmpleadosView extends Component {
               key: 'domicilio',
             },
             {
-                title: 'Localidad y provincia',
+                title: 'Localidad',
                 key: 'localidad',
                 render: item => {
-                  return `${item.localidad} ${item.provincia}`
+                  return `${item.localidad}, ${item.provincia}`
                 }
             },
             {
@@ -149,7 +152,7 @@ class EmpleadosView extends Component {
             <Table 
               columns={columns} 
               pagination={{ pageSize: 5 }}
-              dataSource={clientes}
+              dataSource={empleados}
               loading={loading}
               scroll={{ x: true }}
               rowKey='idEmpleado'
@@ -227,6 +230,8 @@ class EmpleadosView extends Component {
         this.setState({ loading: true });
         const res = await axios.get(url, getHeader());
         let data = res.data;
+
+        console.log(data);
     
       if (!!this.state.dni) {
         data = [data];

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Modal, Form } from 'antd';
+import { Modal, Form, DatePicker } from 'antd';
 import * as Yup from 'yup';
 import { omit } from 'lodash';
+import moment from 'moment';
 import { FormItem } from '../../../../../../globalComponents';
 
 const validateSchema = Yup.object().shape({
@@ -11,7 +12,7 @@ const validateSchema = Yup.object().shape({
   nombreempleado: Yup.string()
     .required('Campo requerido.'),
   
-  fechaingreso: Yup.string()
+  fechaingreso: Yup.date()
     .required('Campo requerido.'),
   
   telefono: Yup.string()
@@ -88,6 +89,15 @@ class ClientesModal extends Component {
                   type = 'number';
                 }
 
+                if (key === 'fechaingreso') {
+                  return (
+                    <div>
+                      <p>Fecha de ingreso:</p>
+                      <DatePicker value={form.fechaingreso} onChange={this.showFecha} />
+                    </div>
+                  );
+                }
+
                 return (
                   <FormItem
                     label={key}
@@ -144,6 +154,10 @@ class ClientesModal extends Component {
           [key]: value
         })
       });
+    }
+
+    showFecha = fecha => {
+      console.log('fecha: ', moment(fecha).format('DD/MM/YYYY'))
     }
 }
 
