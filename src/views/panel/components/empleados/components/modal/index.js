@@ -12,7 +12,8 @@ const validateSchema = Yup.object().shape({
   nombreempleado: Yup.string()
     .required('Campo requerido.'),
   
-  fechaingreso: Yup.date()
+  //fechaingreso: Yup.date()
+  fechaingreso: Yup.string()
     .required('Campo requerido.'),
   
   telefono: Yup.string()
@@ -21,7 +22,7 @@ const validateSchema = Yup.object().shape({
   domicilio: Yup.string()
     .required('Campo requerido.'),
   
-  localidad: Yup.number()
+  localidad: Yup.string()
     .required('Campo requerido.'),
   
   provincia: Yup.string()
@@ -34,7 +35,7 @@ const validateSchema = Yup.object().shape({
     .required('Campo requerido.')
 });
 
-class ClientesModal extends Component {
+class EmpleadosModal extends Component {
     constructor(props) {
       super(props);
     
@@ -42,7 +43,8 @@ class ClientesModal extends Component {
         form: {
           apellidoempleado: '',
           nombreempleado: '',
-          fechaingreso: '',
+          fechaingreso: moment().format('DD/MM/YYYY'),
+          domicilio: '',
           telefono: '',
           localidad: '',
           provincia: '',
@@ -93,7 +95,7 @@ class ClientesModal extends Component {
                   return (
                     <div>
                       <p>Fecha de ingreso:</p>
-                      <DatePicker value={form.fechaingreso} onChange={this.showFecha} />
+                      <DatePicker onChange={this.showFecha} />
                     </div>
                   );
                 }
@@ -126,11 +128,14 @@ class ClientesModal extends Component {
         if (!!this.props.empleado) {
           return this.props.editarEmpleado();
         }
-    
+
+        console.log(this.state);
+        
+
         this.props.crearEmpleado(form);
       } catch (error) {
         let errors = {};
-    
+        console.log(errors)
         error.inner.forEach(error => {
           errors[error.path] = error.message;
         });
@@ -161,4 +166,4 @@ class ClientesModal extends Component {
     }
 }
 
-export default ClientesModal;
+export default EmpleadosModal;

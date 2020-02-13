@@ -163,6 +163,8 @@ class ClientesView extends Component {
     try {
       this.setState({ creating: true });
       const res = await axios.post('http://localhost:60932/cliente/new', form, getHeader());
+      console.log('crear cliente');
+      
 
       if (res.data) {
         message.success('Cliente creado con exito!');

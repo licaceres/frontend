@@ -11,9 +11,8 @@ class Certification extends Component {
     super(props);
 
     this.state = {
-      fecha: '',
       form: {
-        fecha: '',
+        fecha: moment().format('DD/MM/YYYY'),
         dato: '',
         dato2: '',
         dato3: ''
@@ -42,7 +41,8 @@ class Certification extends Component {
   }
 
   // chequea el state del componente al momento del submit
-  handleSubmit = () => {
+  handleSubmit = (event) => {
+    event.preventDefault();
     console.log('> state: ', this.state)
   }
 
@@ -65,7 +65,7 @@ class Certification extends Component {
               // si la key es fecha o la condicion que vos quieras retornas otra cosa
               if (key === 'fecha') {
                 return (
-                    <DatePicker value={form.fecha} onChange={this.onChange} />
+                    <DatePicker onChange={this.onChange} />
                 );
               }
 
