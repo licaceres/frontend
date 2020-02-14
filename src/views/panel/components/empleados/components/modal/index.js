@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Modal, Form, DatePicker } from 'antd';
 import * as Yup from 'yup';
 import { omit } from 'lodash';
-import moment from 'moment';
 import { FormItem } from '../../../../../../globalComponents';
 
 const validateSchema = Yup.object().shape({
@@ -43,7 +42,7 @@ class EmpleadosModal extends Component {
         form: {
           apellidoempleado: '',
           nombreempleado: '',
-          fechaingreso: moment().format('DD/MM/YYYY'),
+          fechaingreso: '',
           domicilio: '',
           telefono: '',
           localidad: '',
@@ -95,7 +94,9 @@ class EmpleadosModal extends Component {
                   return (
                     <div>
                       <p>Fecha de ingreso:</p>
-                      <DatePicker onChange={this.showFecha} />
+                      <DatePicker 
+                        value={form.fechaingreso}
+                        onChange={fecha => this.onChange(fecha, 'fechaingreso')} />
                     </div>
                   );
                 }
@@ -161,9 +162,6 @@ class EmpleadosModal extends Component {
       });
     }
 
-    showFecha = fecha => {
-      console.log('fecha: ', moment(fecha).format('DD/MM/YYYY'))
-    }
 }
 
 export default EmpleadosModal;
